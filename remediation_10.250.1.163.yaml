@@ -4,7 +4,7 @@
 # Client:   LEGIS                      #
 ########################################
 ---
-- hosts: 10.250.1.163
+- hosts: localhost
   vars:
     var_system_crypto_policy: !!str FIPS:OSPP
   tasks:
