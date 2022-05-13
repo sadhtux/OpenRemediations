@@ -1,0 +1,71 @@
+########################################
+# Author:   Skorkiz Duarte             #
+# Date:     13/05/2022                 #
+# Client:   LEGIS                      #
+########################################
+---
+- hosts: 10.250.1.163
+  vars:
+    var_system_crypto_policy: !!str FIPS:OSPP
+  tasks:
+    - name: enable fips mode
+      command: /usr/bin/fips-mode-setup --enable
+      when: ansible_virtualization_type not in ["docker", "lxc", "openvz", "podman", "container"]
+      tags:
+        - CCE-80942-6
+        - DISA-STIG-RHEL-08-010020
+        - NIST-800-53-CM-6(a)
+        - NIST-800-53-IA-7
+        - NIST-800-53-SC-12
+        - NIST-800-53-SC-12(2)
+        - NIST-800-53-SC-12(3)
+        - NIST-800-53-SC-13
+        - enable_fips_mode
+        - high_severity
+        - medium_complexity
+        - medium_disruption
+        - reboot_required
+        - restrict_strategy
+
+    - name: Configure System Cryptography Policy
+      lineinfile:
+        path: /etc/crypto-policies/config
+        regexp: ^(?!#)(\S+)$
+        line: '{{ var_system_crypto_policy }}'
+        create: true
+      tags:
+        - CCE-80935-0
+        - DISA-STIG-RHEL-08-010020
+        - NIST-800-53-AC-17(2)
+        - NIST-800-53-AC-17(a)
+        - NIST-800-53-CM-6(a)
+        - NIST-800-53-MA-4(6)
+        - NIST-800-53-SC-12(2)
+        - NIST-800-53-SC-12(3)
+        - NIST-800-53-SC-13
+        - configure_crypto_policy
+        - high_severity
+        - low_complexity
+        - low_disruption
+        - no_reboot_needed
+        - restrict_strategy
+
+    - name: Verify that Crypto Policy is Set (runtime)
+      command: /usr/bin/update-crypto-policies --set {{ var_system_crypto_policy }}
+      tags:
+        - CCE-80935-0
+        - DISA-STIG-RHEL-08-010020
+        - NIST-800-53-AC-17(2)
+        - NIST-800-53-AC-17(a)
+        - NIST-800-53-CM-6(a)
+        - NIST-800-53-MA-4(6)
+        - NIST-800-53-SC-12(2)
+        - NIST-800-53-SC-12(3)
+        - NIST-800-53-SC-13
+        - configure_crypto_policy
+        - high_severity
+        - low_complexity
+        - low_disruption
+        - no_reboot_needed
+        - restrict_strategy
+...
