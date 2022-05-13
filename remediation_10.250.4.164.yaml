@@ -4,7 +4,7 @@
 # Date:     13/05/2022                 #
 # Client:   LEGIS                      #
 ########################################
-- hosts: 10.250.4.164
+- hosts: localhost
   vars:
     var_system_crypto_policy: !!str FIPS:OSPP
   tasks:
