@@ -1,0 +1,10 @@
+[all:vars]
+ansible_become=yes
+ansible_become_user=root
+ansible_become_method=su
+ansible_python_interpreter=auto_silent
+#ansible_ssh_common_args=sftp
+
+[servers]
+10.250.1.163
+10.250.1.164
