@@ -1,0 +1,11 @@
+---
+### Copiado de la config original a todos los servers
+    - name: "Copiado de la config original a todos los servers"
+      copy:
+        src: ./ntp_orginal.tux
+        dest: /etc/ntp.conf
+        owner: root
+        group: root
+        mode: '0644'
+        backup: yes
+...

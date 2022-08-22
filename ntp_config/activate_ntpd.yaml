@@ -1,0 +1,13 @@
+---
+### Activamos el servicio ntpd
+    - name: "Starting service ntpd"
+      service:
+        name: ntpd
+        enabled: yes
+
+### Inciamos el servicio ntpd
+    - name: "Starting service ntpd"
+      service:
+        name: ntpd
+        state: started
+...

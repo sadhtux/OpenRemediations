@@ -1,0 +1,10 @@
+---
+- name: "Set ntp config for all servers"
+  hosts: all
+
+  tasks:
+
+    - include: ./disable_chrony.yaml
+    - include: ./ntp_copy_conf.yaml
+    - include: ./activate_ntpd.yaml
+...

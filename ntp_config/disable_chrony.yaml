@@ -1,0 +1,13 @@
+---
+### Desactivamos el servicio chronyd
+    - name: "Disabling service chronyd"
+      service:
+        name: chronyd
+        enabled: no
+
+### Detenemos el servicio
+    - name: "Stopping service chronyd"
+      service:
+        name: chronyd
+        state: stopped
+...
