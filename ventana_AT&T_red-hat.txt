@@ -1,0 +1,66 @@
+
+### Preparamos la estructura en el /tmp del server 
+
+mkdir -pv /tmp/${HOSTNAME}
+
+
+
+subscription-manager status	> /tmp/${HOSTNAME}/subscription-manager-status-antes.sadh
+
+
+
+### listar los paquetes y crear listado de paquetes ajenos en /tmp  (sin gpg y ordenados)
+
+rpm -qa --qf '%{NAME}-%{version}-%{release}.%{arch},%{VENDOR}\n' |grep -vi "Red Hat" | grep -vi "hewlett packard" | grep -vi gpg | sort > /tmp/${HOSTNAME}/listar_paquetes_antes.sadh
+
+
+
+### Generamos el listado de dependencias 
+
+for PAQUETE in $(cat /tmp/${HOSTNAME}/listar_paquetes_antes.sadh)
+do
+    yum remove $PAQUETE --assumeno >> /tmp/${HOSTNAME}/dependencias_antes.sadh
+done
+
+
+#### remover los paquetes a sustituir sin las dependencias (en caso de haber encontrado alguna)
+
+$ rpm -e libcurl-7.72.0-2.0.cf.fc17.x86_64  --nodeps
+$ rpm -e curl-7.72.0-2.0.cf.fc17.x86_64 --nodeps
+$ rpm -e libcurl7155-7.15.5-17.cf.fc17.x86_64 --nodeps
+
+### instalar los paquetes soportados
+
+$ rpm -ivh curl-7.29.0-54.el7.x86_64
+$ rpm -ivh python-pycurl-7.19.0-19.el7.x86_64
+$ rpm -ivh libcurl-7.29.0-54.el7.x86_64
+
+### volvemos a chequear los paquetes, en este caso los soportados
+
+rpm -qa --qf '%{NAME}-%{version}-%{release}.%{arch},%{VENDOR}\n' |grep -vi "Red Hat" | grep -vi "hewlett packard" | grep -vi gpg | sort > /tmp/${HOSTNAME}/listar_paquetes_despues.sadh
+
+### generamos listado con las dependencias nuevas
+
+
+for PAQUETE in $(cat /tmp/${HOSTNAME}/listar_paquetes_despues.sadh)
+do
+    yum remove $PAQUETE --assumeno >> /tmp/${HOSTNAME}/dependencias_despues.sadh
+done
+
+
+
+###### Validate Red Hat Satellite registration:   #######
+
+ssh root@10.150.109.13
+
+subscription-manager status  > /tmp/${HOSTNAME}/subscription-manager-status-despues.sadh
+subscription-manager refresh
+subscription-manager list --available --all  > /tmp/${HOSTNAME}/subscription-manager-list-available-all.final.sadh
+
+
+$ yum clean all
+$ yum repolist
+$ yum install sos
+
+
+### GENERAR UN SOS REPORT PARA CERRAR EL CASO...
